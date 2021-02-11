@@ -13,6 +13,12 @@ class Main(tk.Tk):
 
         self.geometry("1280x600")
         self.title("Pygame Level Creator")
+        self.font = ("System", 16, "bold")
+
+        self.TILE_MODE = "Floor"
+        self.TILESET = None
+        self.MAP_WIDTH = None
+        self.MAP_HEIGHT = None
 
         # Widget Definitions
 
@@ -25,6 +31,15 @@ class Main(tk.Tk):
 
         self.toolbar.pack(side="top", fill="x")
         self.tileframe.pack(side="top", fill="both", expand=True)
+
+    def setTileSet(self, value):
+        self.TILESET = value
+    
+    def setMapWidth(self, value):
+        self.MAP_WIDTH = value
+
+    def setMapHeight(self, value):
+        self.MAP_HEIGHT = value
 
 if __name__ == "__main__":
     root = Main()
