@@ -3,8 +3,18 @@ import tkinter as tk
 from tkinter import filedialog
 
 # external imports
+from PIL import ImageTk, Image
 
 # custom imports
+
+def loadImage(imagepath):
+    image = Image.open(imagepath)
+    return image
+
+def getTileFromImage(x, y, image):
+    crop_rect = (x*32, y*32, (x*32)+32, (y*32)+32)
+    cropped_img = image.crop(crop_rect)
+    return cropped_img
 
 class ScrollFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -99,4 +109,27 @@ class TileSetSelectionDialog(tk.Toplevel):
         self.parent.loadTileSet()
         self.destroy()
         self.grab_release()
-            
+    
+class ToolbarTile(tk.Label):
+    def __init__(self, parent,):
+        super().__init__(parent,)
+
+        self.image = None
+
+    def setImage(self, image):
+        self.image = ImageTk.PhotoImage(image)
+        self.configure(image=self.image)
+
+
+class TileCache(object):
+    def __init__(self, width, height):
+        self.tiles = [[0,]*int(width/32)]*int(height/32)
+
+    def getTile(self, r, c):
+        try:
+            return self.tiles[r][c]
+        except IndexError:
+            return False
+
+    def addTileImage(self, tile, r, c):
+        self.tiles[r][c] = tile
