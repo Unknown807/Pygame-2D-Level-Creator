@@ -13,7 +13,7 @@ class ScrollFrame(tk.Frame):
         # Widget Defintions
 
         self.scroll_canvas = tk.Canvas(self, bd=0, highlightthickness=0)
-        self.frame = tk.Frame(self.scroll_canvas)
+        self.inner_frame = tk.Frame(self.scroll_canvas)
         self.scroll_bar_y = tk.Scrollbar(self, orient="vertical", command=self.scroll_canvas.yview)
         self.scroll_bar_x = tk.Scrollbar(self, orient="horizontal", command=self.scroll_canvas.xview)
 
@@ -25,11 +25,11 @@ class ScrollFrame(tk.Frame):
         # Widget Placement
 
         self.scroll_bar_y.pack(side="right", fill="y")
+        self.scroll_canvas.pack(side="top", fill="both", expand=True)
         self.scroll_bar_x.pack(side="bottom", fill="x")
 
-        self.scroll_canvas.pack(side="left")
-        self.canvas_window = self.scroll_canvas.create_window((0,0), window=self.frame, anchor="nw")
-        self.frame.bind("<Configure>", lambda e: self.adjustScrollRegion)
+        self.canvas_window = self.scroll_canvas.create_window((0,0), window=self.inner_frame, anchor="nw")
+        self.inner_frame.bind("<Configure>", lambda e: self.adjustScrollRegion())
 
     def adjustScrollRegion(self):
         self.scroll_canvas.configure(scrollregion=self.scroll_canvas.bbox("all"))
@@ -49,6 +49,7 @@ class TileSetSelectionDialog(tk.Toplevel):
         self.title("Select Tileset")
         self.font = ("System", 14, "bold")
 
+        self.parent = parent
         self.controller = controller
 
         # Widget Defintions
@@ -76,6 +77,9 @@ class TileSetSelectionDialog(tk.Toplevel):
         self.tileset_button.pack(side="top", fill="y", expand=True, padx=5, pady=5)
         self.submit_button.pack(side="top", fill="y", expand=True, padx=5, pady=5)
 
+        self.focus_set()
+        self.grab_set()
+
     def selectTileSet(self):
         filepath = filedialog.askopenfilename(
             initialdir="/",
@@ -92,5 +96,7 @@ class TileSetSelectionDialog(tk.Toplevel):
         height = int(self.height_entry.get())
         self.controller.setMapWidth(width)
         self.controller.setMapHeight(height)
+        self.parent.loadTileSet()
         self.destroy()
+        self.grab_release()
             

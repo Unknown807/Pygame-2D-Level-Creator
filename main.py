@@ -23,7 +23,6 @@ class Main(tk.Tk):
         # Widget Definitions
 
         self.toolbar = ToolBarFrame(self, bd=1, relief="raised")
-        self.toolbar.hideVerticalScrollBar()
 
         self.tileframe = TileFrame(self)
 
