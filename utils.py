@@ -111,25 +111,28 @@ class TileSetSelectionDialog(tk.Toplevel):
         self.grab_release()
     
 class ToolbarTile(tk.Label):
-    def __init__(self, parent,):
+    def __init__(self, parent):
         super().__init__(parent,)
 
         self.image = None
+        self.x = None
+        self.y = None
+
+    def setX(self, value):
+        self.x = value
+
+    def setY(self, value):
+        self.y = value
+
+    def getX(self):
+        return self.x
+
+    def getY(self):
+        return self.y
 
     def setImage(self, image):
         self.image = ImageTk.PhotoImage(image)
         self.configure(image=self.image)
-
-
-class TileCache(object):
-    def __init__(self, width, height):
-        self.tiles = [[0,]*int(width/32)]*int(height/32)
-
-    def getTile(self, r, c):
-        try:
-            return self.tiles[r][c]
-        except IndexError:
-            return False
-
-    def addTileImage(self, tile, r, c):
-        self.tiles[r][c] = tile
+    
+    def clearImage(self):
+        self.image = None

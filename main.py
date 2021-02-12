@@ -6,7 +6,6 @@ import tkinter as tk
 # custom imports
 from toolbar import ToolBarFrame
 from tileframe import TileFrame
-from utils import TileCache
 
 class Main(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -19,7 +18,6 @@ class Main(tk.Tk):
         self.TILE_MODE = "Floor"
         
         self.TILESET = None
-        self.TILE_CACHE = None
 
         self.MAP_WIDTH = None
         self.MAP_HEIGHT = None
@@ -31,8 +29,8 @@ class Main(tk.Tk):
         self.toolbar = ToolBarFrame(self, bd=1, relief="raised")
         self.tileframe = TileFrame(self)
 
-        self.bind("<Left>", lambda e: self.toolbar.shiftTilesLeft())
-        self.bind("<Right>", lambda e: self.toolbar.shiftTilesRight())
+        self.bind("<Left>", lambda e: self.toolbar.shiftTiles("LEFT"))
+        self.bind("<Right>", lambda e: self.toolbar.shiftTiles("RIGHT"))
 
         # Widget Placement
 
@@ -54,9 +52,6 @@ class Main(tk.Tk):
     def setTileSetHeight(self, value):
         self.TILESET_HEIGHT = value
     
-    def setTileCache(self, width, height):
-        self.TILE_CACHE = TileCache(width, height)
-    
     def getTileSet(self):
         return self.TILESET
     
@@ -71,9 +66,6 @@ class Main(tk.Tk):
     
     def getTileSetHeight(self):
         return self.TILESET_HEIGHT
-
-    def getTileCache(self):
-        return self.TILE_CACHE
 
 if __name__ == "__main__":
     root = Main()
