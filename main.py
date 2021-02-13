@@ -1,5 +1,6 @@
 # native imports
 import tkinter as tk
+from tkinter.constants import X
 
 # external imports
 
@@ -19,11 +20,12 @@ class Main(tk.Tk):
         
         self.TILESET = None
 
-        self.MAP_WIDTH = None
-        self.MAP_HEIGHT = None
+        self.MAP_WIDTH = 256
+        self.MAP_HEIGHT = 256
 
         self.TILESET_WIDTH = None
         self.TILESET_HEIGHT = None
+
         # Widget Definitions
 
         self.toolbar = ToolBarFrame(self, bd=1, relief="raised")
@@ -36,6 +38,8 @@ class Main(tk.Tk):
 
         self.toolbar.pack(side="top", fill="x")
         self.tileframe.pack(side="top", fill="both", expand=True)
+
+        self.SELECTED_TILE = self.toolbar.selected_tile
 
     def setTileSet(self, value):
         self.TILESET = value
@@ -54,6 +58,12 @@ class Main(tk.Tk):
     
     def getTileSet(self):
         return self.TILESET
+    
+    def getSelectedTile(self):
+        x = self.SELECTED_TILE.getX()
+        y = self.SELECTED_TILE.getY()
+        image = self.SELECTED_TILE.getImage()
+        return (x, y, image)
     
     def getMapWidth(self):
         return self.MAP_WIDTH

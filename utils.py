@@ -14,7 +14,7 @@ def loadImage(imagepath):
 def getTileFromImage(x, y, image):
     crop_rect = (x*32, y*32, (x*32)+32, (y*32)+32)
     cropped_img = image.crop(crop_rect)
-    return cropped_img
+    return ImageTk.PhotoImage(cropped_img)
 
 class ScrollFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -49,7 +49,6 @@ class ScrollFrame(tk.Frame):
 
     def hideVerticalScrollBar(self):
         self.scroll_bar_y.pack_forget()
-
 
 class TileSetSelectionDialog(tk.Toplevel):
     def __init__(self, parent, controller, *args, **kwargs):
@@ -109,11 +108,9 @@ class TileSetSelectionDialog(tk.Toplevel):
         self.parent.loadTileSet()
         self.destroy()
         self.grab_release()
-    
-class ToolbarTile(tk.Label):
-    def __init__(self, parent):
-        super().__init__(parent,)
 
+class BaseTile(object):
+    def __init__(self,):
         self.image = None
         self.x = None
         self.y = None
@@ -131,8 +128,37 @@ class ToolbarTile(tk.Label):
         return self.y
 
     def setImage(self, image):
-        self.image = ImageTk.PhotoImage(image)
-        self.configure(image=self.image)
+        self.image = image
     
+    def getImage(self):
+        return self.image
+
     def clearImage(self):
         self.image = None
+
+class ToolbarTile(tk.Label, BaseTile):
+    def __init__(self, parent):
+        tk.Label.__init__(self, parent,)
+        BaseTile.__init__(self,)
+
+    def setImage(self, image):
+        super().setImage(image)
+        self.configure(image=self.image)
+
+class MapTile(BaseTile):
+    def __init__(self):
+
+        self.canvasImageRef = None
+
+        self.setImage(
+            ImageTk.PhotoImage(
+                loadImage("defaulttile.png")
+            )
+        )
+
+    def setCanvasImageRef(self, ref):
+        self.canvasImageRef = ref
+
+    def getCanvasImageRef(self):
+        return self.canvasImageRef
+

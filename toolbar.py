@@ -2,7 +2,7 @@
 import tkinter as tk
 
 # external imports
-
+from PIL import ImageTk
 
 # custom imports
 from utils import (
@@ -34,23 +34,40 @@ class ToolBarFrame(tk.Frame):
         self.tile_ribbon.scroll_canvas.configure(height=100)
         self.tile_ribbon.hideVerticalScrollBar()
 
+        self.selected_tile_frame = tk.Frame(self)
+
+        self.selected_tile_label = tk.Label(self.selected_tile_frame, text="Current Tile:", font=self.controller.font)
+        self.selected_tile = ToolbarTile(self.selected_tile_frame)
+        self.selected_tile.setImage(ImageTk.PhotoImage(loadImage("defaulttile.png")))
+
         # Widget Placement
 
         self.collection_frame.pack(side="left", fill="both")
         self.tileset_button.pack(side="top", fill="y", expand=True, padx=5, pady=5)
         self.export_button.pack(side="top", fill="y", expand=True, padx=5, pady=5)
         self.mode_label.pack(side="top", fill="y", expand=True, padx=5, pady=5)
+        self.selected_tile_frame.pack(side="right", padx=5, pady=5)
+        self.selected_tile_label.pack(side="top", fill="y", expand=True, padx=2, pady=2)
+        self.selected_tile.pack(side="top", fill="y", expand=True, padx=2, pady=2)
         self.tile_ribbon.pack(side="right", fill="x", expand=True, padx=5, pady=5)
 
         for i in range(2):
             for j in range(32):
                 tile = ToolbarTile(self.tile_ribbon.inner_frame)
                 tile.grid(row=i, column=j)
+                tile.bind("<Button-1>", self.selectTile)
+
+    def selectTile(self, event):
+        tile = event.widget
+        self.selected_tile.setImage(tile.getImage())
+        self.selected_tile.setX(tile.getX())
+        self.selected_tile.setY(tile.getY())
 
     def selectTileSet(self):
         #new_tileset = TileSetSelectionDialog(self, self.controller)
         self.controller.setTileSet("C:\\Users\\Teks Viler\\Documents\\PYGAMESTUFF\\test1\\tileset2.png")
         self.loadTileSet()
+        self.controller.tileframe.createMap()
 
     def loadTileSet(self):
         self.TILE_X = 0
