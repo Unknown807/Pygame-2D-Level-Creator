@@ -28,7 +28,7 @@ class ToolBarFrame(tk.Frame):
             font=self.controller.font, command=self.selectTileSet)
         self.export_button = tk.Button(self.collection_frame, text="Export Level", 
             font=self.controller.font, command=self.exportLevel)
-        self.mode_label = tk.Label(self.collection_frame, text="MODE: Floor", font=self.controller.font)
+        self.mode_label = tk.Label(self.collection_frame, text="MODE: floor", font=self.controller.font)
 
         self.tile_ribbon = ScrollFrame(self)
         self.tile_ribbon.scroll_canvas.configure(height=100)
@@ -108,6 +108,9 @@ class ToolBarFrame(tk.Frame):
 
     def shiftTiles(self, key):
         tileset_height = self.controller.getTileSetHeight()
+        if tileset_height is None: 
+            return
+
         limit = ((tileset_height/32)**2)/64
         if limit <= 1:
             return 

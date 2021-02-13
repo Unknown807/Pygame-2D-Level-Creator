@@ -16,6 +16,12 @@ def getTileFromImage(x, y, image):
     cropped_img = image.crop(crop_rect)
     return ImageTk.PhotoImage(cropped_img)
 
+def createTransparentRect(fill):
+    fill = fill + (int(0.5*255),)
+    image = Image.new("RGBA", (32, 32), fill)
+    image = ImageTk.PhotoImage(image)
+    return image 
+
 class ScrollFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -148,7 +154,10 @@ class ToolbarTile(tk.Label, BaseTile):
 class MapTile(BaseTile):
     def __init__(self):
 
-        self.canvasImageRef = None
+        self.canvas_image_ref = None
+        self.canvas_wall_ref = None
+        self.wall = 0
+        self.overlay = 0
 
         self.setImage(
             ImageTk.PhotoImage(
@@ -156,9 +165,30 @@ class MapTile(BaseTile):
             )
         )
 
+    def setWall(self, value):
+        self.wall = value
+    
+    def setCanvasWallRef(self, value):
+        self.canvas_wall_ref = value
+
+    def setOverlay(self, value):
+        self.overlay = value
+
     def setCanvasImageRef(self, ref):
-        self.canvasImageRef = ref
+        self.canvas_image_ref = ref
+    
+    def getCanvasWallRef(self):
+        return self.canvas_wall_ref
+
+    def getWall(self):
+        return self.wall
+
+    def getOverlay(self):
+        return self.overlay
 
     def getCanvasImageRef(self):
-        return self.canvasImageRef
+        return self.canvas_image_ref
+    
+    def clearCanvasWallRef(self):
+        self.canvas_wall_ref = None
 
