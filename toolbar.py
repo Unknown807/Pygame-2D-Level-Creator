@@ -28,7 +28,7 @@ class ToolBarFrame(tk.Frame):
             font=self.controller.font, command=self.selectTileSet)
         self.export_button = tk.Button(self.collection_frame, text="Export Level", 
             font=self.controller.font, command=self.exportLevel)
-        self.mode_label = tk.Label(self.collection_frame, text="MODE: floor", font=self.controller.font)
+        self.mode_label = tk.Label(self.collection_frame, text="MODE: normal", font=self.controller.font)
 
         self.tile_ribbon = ScrollFrame(self)
         self.tile_ribbon.scroll_canvas.configure(height=100)
@@ -75,7 +75,7 @@ class ToolBarFrame(tk.Frame):
         self.ROW_LEN = None
 
         for tile in self.tile_ribbon.inner_frame.winfo_children():
-            tile.clearImage()
+            tile.setImage(None)
 
         loaded_tileset = loadImage(self.controller.getTileSet())
         self.controller.setTileSet(loaded_tileset)

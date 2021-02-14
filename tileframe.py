@@ -14,8 +14,6 @@ class TileFrame(ScrollFrame):
         self.scroll_canvas.configure(bg="white")
         
         self.tiles = []
-        self.wall_imgs = []
-        self.overlay_imgs = []
 
         self.RGB_R = (65535,0,0)
         self.RGB_B = self.RGB_R[::-1]
@@ -23,8 +21,6 @@ class TileFrame(ScrollFrame):
     def createMap(self):
         self.scroll_canvas.delete("all")
         self.tiles = []
-        self.wall_imgs = []
-        self.overlay_imgs = []
 
         map_width = self.controller.getMapWidth()
         map_height = self.controller.getMapHeight()
@@ -36,6 +32,7 @@ class TileFrame(ScrollFrame):
                 tile = MapTile()
                 drawn_tile = self.scroll_canvas.create_image((startx+i*33,20+j*33), image=tile.getImage(), anchor="nw")
                 self.scroll_canvas.tag_bind(drawn_tile, "<Button-1>", self.setTile)
+                self.scroll_canvas.tag_bind(drawn_tile, "<Button-3>", self.removeTile)
                 tile.setCanvasImageRef(drawn_tile)
                 self.tiles.append(tile)
         
@@ -44,13 +41,23 @@ class TileFrame(ScrollFrame):
     def setTile(self, event):
         mode = self.controller.getMode()
         event_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
-        if mode == "floor":
+        if mode == "normal":
             self.setNewTile(event_tile)
         elif mode == "wall":
             self.setWallTile(event_tile)
-        else:
+        elif mode == "overlay":
             self.setOverlayTile(event_tile)
+        else:
+            pass
     
+    def removeTile(self, event):
+        event_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
+        map_tile = self.findMapTile(event_tile)
+    
+        map_tile.reset()
+        map_tile.setCanvasImageRef(event_tile) 
+        self.scroll_canvas.itemconfigure(event_tile, image=map_tile.getImage())
+
     def findMapTile(self, canvas_tile):
         for tile in self.tiles:
             ref_tile = tile.getCanvasImageRef()
@@ -79,7 +86,7 @@ class TileFrame(ScrollFrame):
         x, y = self.scroll_canvas.coords(canvas_tile)
 
         image = createTransparentRect(self.RGB_R)
-        self.wall_imgs.append(image)
+        map_tile.setWallImage(image)
         
         drawn_tile = self.scroll_canvas.create_image((x,y), image=image, anchor="nw")
         self.scroll_canvas.tag_bind(drawn_tile, "<Button-1>", self.removeWallTile)
@@ -91,7 +98,8 @@ class TileFrame(ScrollFrame):
         wall_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
         map_tile = self.findMapTileWithWall(wall_tile)
 
-        map_tile.clearCanvasWallRef()
+        map_tile.setCanvasWallRef(None)
+        map_tile.setWallImage(None)
         map_tile.setWall(0)
 
         self.scroll_canvas.delete(wall_tile)

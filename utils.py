@@ -139,9 +139,6 @@ class BaseTile(object):
     def getImage(self):
         return self.image
 
-    def clearImage(self):
-        self.image = None
-
 class ToolbarTile(tk.Label, BaseTile):
     def __init__(self, parent):
         tk.Label.__init__(self, parent,)
@@ -156,23 +153,34 @@ class MapTile(BaseTile):
 
         self.canvas_image_ref = None
         self.canvas_wall_ref = None
+        
+        self.wall_img = None
+        self.overlay_img = None
+
         self.wall = 0
         self.overlay = 0
 
-        self.setImage(
-            ImageTk.PhotoImage(
-                loadImage("defaulttile.png")
-            )
-        )
+        self.setImage(createTransparentRect((0,0,0)))
+
+    def reset(self):
+        self.__init__()
+        self.x = None
+        self.y = None
 
     def setWall(self, value):
         self.wall = value
     
-    def setCanvasWallRef(self, value):
-        self.canvas_wall_ref = value
+    def setCanvasWallRef(self, ref):
+        self.canvas_wall_ref = ref
 
     def setOverlay(self, value):
         self.overlay = value
+    
+    def setWallImage(self, image):
+        self.wall_img = image
+    
+    def setOverlayImage(self, image):
+        self.overlay_img = image
 
     def setCanvasImageRef(self, ref):
         self.canvas_image_ref = ref
@@ -189,6 +197,10 @@ class MapTile(BaseTile):
     def getCanvasImageRef(self):
         return self.canvas_image_ref
     
-    def clearCanvasWallRef(self):
-        self.canvas_wall_ref = None
+    def getWallImage(self):
+        return self.wall_img
+    
+    def getOverlayImage(self):
+        return self.overlay_img
+
 
