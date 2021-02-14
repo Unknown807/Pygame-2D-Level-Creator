@@ -7,9 +7,9 @@ from PIL import ImageTk
 # custom imports
 from utils import (
     ScrollFrame, TileSetSelectionDialog, 
-    loadImage, getTileFromImage, ToolbarTile
+    loadImage, getTileFromImage, ToolbarTile,
+    createTransparentRect
 )
-
 
 class ToolBarFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -28,7 +28,7 @@ class ToolBarFrame(tk.Frame):
             font=self.controller.font, command=self.selectTileSet)
         self.export_button = tk.Button(self.collection_frame, text="Export Level", 
             font=self.controller.font, command=self.exportLevel)
-        self.mode_label = tk.Label(self.collection_frame, text="MODE: normal", font=self.controller.font)
+        self.mode_label = tk.Label(self.collection_frame, text="MODE: floor", font=self.controller.font)
 
         self.tile_ribbon = ScrollFrame(self)
         self.tile_ribbon.scroll_canvas.configure(height=100)
@@ -38,7 +38,7 @@ class ToolBarFrame(tk.Frame):
 
         self.selected_tile_label = tk.Label(self.selected_tile_frame, text="Current Tile:", font=self.controller.font)
         self.selected_tile = ToolbarTile(self.selected_tile_frame)
-        self.selected_tile.setImage(ImageTk.PhotoImage(loadImage("defaulttile.png")))
+        self.selected_tile.setImage(createTransparentRect((0,0,0)))
 
         # Widget Placement
 

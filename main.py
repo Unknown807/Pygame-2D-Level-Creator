@@ -16,7 +16,7 @@ class Main(tk.Tk):
         self.title("Pygame Level Creator")
         self.font = ("System", 16, "bold")
 
-        self.TILE_MODE = "normal"
+        self.TILE_MODE = "floor"
         
         self.TILESET = None
 
@@ -39,7 +39,6 @@ class Main(tk.Tk):
         self.bind("1", lambda e: self.setMode(0))
         self.bind("2", lambda e: self.setMode(1))
         self.bind("3", lambda e: self.setMode(2))
-        self.bind("4", lambda e: self.setMode(3))
 
         # Widget Placement
 
@@ -49,22 +48,20 @@ class Main(tk.Tk):
         self.SELECTED_TILE = self.toolbar.selected_tile
 
     def setMode(self, mnum):
-        modes = ("normal","wall","overlay", "floor")
-        colors = ("black", "red", "blue", "green")
+        modes = ("floor","wall","overlay")
+        colors = ("black", "red", "blue")
         self.TILE_MODE = modes[mnum]
         self.toolbar.mode_label.configure(text="MODE: "+self.TILE_MODE, fg=colors[mnum])
 
         if mnum == 0:
-            self.tileframe.hideWallTiles()
-            self.tileframe.hideOverlayTiles()
+            self.tileframe.toggleWallTiles("hidden")
+            self.tileframe.toggleOverlayTiles("hidden")
         elif mnum == 1:
-            self.tileframe.showWallTiles()
-            self.tileframe.hideOverlayTiles()
-        elif mnum == 2:
-            self.tileframe.showOverlayTiles()
-            self.tileframe.hideWallTiles()
+            self.tileframe.toggleOverlayTiles("hidden")
+            self.tileframe.toggleWallTiles("normal")
         else:
-            pass
+            self.tileframe.toggleWallTiles("hidden")
+            self.tileframe.toggleOverlayTiles("normal")
 
     def setTileSet(self, value):
         self.TILESET = value
