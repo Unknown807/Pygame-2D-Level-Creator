@@ -2,14 +2,12 @@
 import tkinter as tk
 
 # external imports
-from PIL import ImageTk
 
 # custom imports
-from utils import (
-    ScrollFrame, TileSetSelectionDialog, 
-    loadImage, getTileFromImage, ToolbarTile,
-    createTransparentRect
-)
+from scrollframe import ScrollFrame
+from tileset_selection_dialog import TileSetSelectionDialog
+from toolbartile import ToolbarTile
+from utils import loadImage, getTileFromImage, createTransparentRect
 
 class ToolBarFrame(tk.Frame):
     def __init__(self, parent, *args, **kwargs):

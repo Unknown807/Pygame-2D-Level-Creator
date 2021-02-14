@@ -1,6 +1,5 @@
 # native imports
 import tkinter as tk
-from tkinter.constants import X
 
 # external imports
 

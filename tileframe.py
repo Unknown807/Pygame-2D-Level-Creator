@@ -4,7 +4,9 @@ import tkinter as tk
 # external imports
 
 # custom imports
-from utils import (ScrollFrame, MapTile, createTransparentRect)
+from scrollframe import ScrollFrame
+from maptile import MapTile
+from utils import createTransparentRect
 
 class TileFrame(ScrollFrame):
     def __init__(self, parent, *args, **kwargs):
