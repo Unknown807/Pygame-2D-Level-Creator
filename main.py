@@ -1,4 +1,5 @@
 # native imports
+import pickle
 import tkinter as tk
 
 # external imports
@@ -15,12 +16,14 @@ class Main(tk.Tk):
         self.title("Pygame Level Creator")
         self.font = ("System", 16, "bold")
 
+        self.LEVEL_NAME = None
+
         self.TILE_MODE = "floor"
-        
+        self.TILESET_NAME = None
         self.TILESET = None
 
-        self.MAP_WIDTH = 256
-        self.MAP_HEIGHT = 256
+        self.MAP_WIDTH = None
+        self.MAP_HEIGHT = None
 
         self.TILESET_WIDTH = None
         self.TILESET_HEIGHT = None
@@ -45,7 +48,33 @@ class Main(tk.Tk):
         self.tileframe.pack(side="top", fill="both", expand=True)
 
         self.SELECTED_TILE = self.toolbar.selected_tile
+    
+    def exportLevel(self):
+        limit = int(self.MAP_WIDTH/32)
 
+        level = {
+            "tileset":self.TILESET_NAME,
+            "width":self.TILESET_WIDTH,
+            "height":self.TILESET_WIDTH,
+            "map_width":self.MAP_WIDTH,
+            "map_height":self.MAP_HEIGHT,
+            "tiles": [],
+        }
+
+        for tile in self.tileframe.tiles:
+            data = (
+                tile.getX(), tile.getY(),
+                tile.getWall(), tile.getOverlay()
+            )
+            if None in data:
+                data = None
+
+            level["tiles"].append(data)
+            
+        with open(self.LEVEL_NAME+".level", "wb") as level_file:
+            pickle.dump(level, level_file, protocol=pickle.DEFAULT_PROTOCOL)
+
+    # For the mode
     def setMode(self, mnum):
         modes = ("floor","wall","overlay")
         colors = ("black", "red", "blue")
@@ -62,44 +91,60 @@ class Main(tk.Tk):
             self.tileframe.toggleWallTiles("hidden")
             self.tileframe.toggleOverlayTiles("normal")
 
+    def getMode(self):
+        return self.TILE_MODE
+
+    # For the tile set
     def setTileSet(self, value):
         self.TILESET = value
     
-    def setMapWidth(self, value):
-        self.MAP_WIDTH = value
+    def getTileSet(self):
+        return self.TILESET
 
-    def setMapHeight(self, value):
-        self.MAP_HEIGHT = value
+    def setTileSetName(self, value):
+        self.TILESET_NAME = value
     
+    def getTileSetName(self):
+        return self.TILESET_NAME
+
     def setTileSetWidth(self, value):
         self.TILESET_WIDTH = value
     
     def setTileSetHeight(self, value):
         self.TILESET_HEIGHT = value
-    
-    def getMode(self):
-        return self.TILE_MODE
-
-    def getTileSet(self):
-        return self.TILESET
-    
-    def getSelectedTile(self):
-        x = self.SELECTED_TILE.getX()
-        y = self.SELECTED_TILE.getY()
-        image = self.SELECTED_TILE.getImage()
-        return (x, y, image)
-    
-    def getMapWidth(self):
-        return self.MAP_WIDTH
-    
-    def getMapHeight(self):
-        return self.MAP_HEIGHT
 
     def getTileSetWidth(self):
         return self.TILESET_WIDTH
     
     def getTileSetHeight(self):
         return self.TILESET_HEIGHT
+
+    # For the map
+    def setMapWidth(self, value):
+        self.MAP_WIDTH = value
+
+    def setMapHeight(self, value):
+        self.MAP_HEIGHT = value
+    
+    def getMapWidth(self):
+        return self.MAP_WIDTH
+    
+    def getMapHeight(self):
+        return self.MAP_HEIGHT
+    
+    # For the level name
+    def setLevelName(self, value):
+        self.LEVEL_NAME = value
+
+    # Other
+    def getSelectedTile(self):
+        x = self.SELECTED_TILE.getX()
+        y = self.SELECTED_TILE.getY()
+        image = self.SELECTED_TILE.getImage()
+        return (x, y, image)
+    
+    def createMap(self):
+        self.tileframe.createMap()
 
 if __name__ == "__main__":
     root = Main()

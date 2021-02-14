@@ -10,7 +10,7 @@ class TileSetSelectionDialog(tk.Toplevel):
     def __init__(self, parent, controller, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
-        self.geometry("200x300")
+        self.geometry("250x350")
         self.title("Select Tileset")
         self.font = ("System", 14, "bold")
 
@@ -18,6 +18,9 @@ class TileSetSelectionDialog(tk.Toplevel):
         self.controller = controller
 
         # Widget Defintions
+
+        self.name_label = tk.Label(self, text="Level Name:", font=self.font)
+        self.name_entry = tk.Entry(self, font=self.font)
 
         # For the width of the map (has to be a multiple of 32)
         self.width_label = tk.Label(self, text="Map Width:", font=self.font)
@@ -35,12 +38,13 @@ class TileSetSelectionDialog(tk.Toplevel):
 
         # Widget Placement
 
-        self.width_label.pack(side="top", fill="y", expand=True, padx=5, pady=5)
-        self.width_entry.pack(side="top", fill="y", expand=True, padx=5, pady=5)
-        self.height_label.pack(side="top", fill="y", expand=True, padx=5, pady=5)
-        self.height_entry.pack(side="top", fill="y", expand=True, padx=5, pady=5)
-        self.tileset_button.pack(side="top", fill="y", expand=True, padx=5, pady=5)
-        self.submit_button.pack(side="top", fill="y", expand=True, padx=5, pady=5)
+        widgets = (
+            self.name_label, self.name_entry, self.width_label, self.width_entry,
+            self.height_label, self.height_entry, self.tileset_button,
+            self.submit_button
+        )
+        for widget in widgets:
+            widget.pack(side="top", fill="y", expand=True, padx=5, pady=5)
 
         self.focus_set()
         self.grab_set()
@@ -54,13 +58,19 @@ class TileSetSelectionDialog(tk.Toplevel):
         filename = filepath.split("/")[-1]
         if filepath != "":
             self.controller.setTileSet(filepath)
+            self.controller.setTileSetName(filename)
             self.tileset_button.configure(text=filename)
 
     def submitTileSet(self):
         width = int(self.width_entry.get())
         height = int(self.height_entry.get())
+        levelname = self.name_entry.get()
+
         self.controller.setMapWidth(width)
         self.controller.setMapHeight(height)
+        self.controller.setLevelName(levelname)
+        
         self.parent.loadTileSet()
+        self.controller.createMap()
         self.destroy()
         self.grab_release()

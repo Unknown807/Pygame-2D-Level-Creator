@@ -62,10 +62,10 @@ class ToolBarFrame(tk.Frame):
         self.selected_tile.setY(tile.getY())
 
     def selectTileSet(self):
-        #new_tileset = TileSetSelectionDialog(self, self.controller)
-        self.controller.setTileSet("C:\\Users\\Teks Viler\\Documents\\PYGAMESTUFF\\test1\\tileset2.png")
-        self.loadTileSet()
-        self.controller.tileframe.createMap()
+        new_tileset = TileSetSelectionDialog(self, self.controller)
+        # self.controller.setTileSet("C:\\Users\\Teks Viler\\Documents\\PYGAMESTUFF\\test1\\tileset2.png")
+        # self.loadTileSet()
+        # self.controller.createMap()
 
     def loadTileSet(self):
         self.TILE_X = 0
@@ -126,4 +126,4 @@ class ToolBarFrame(tk.Frame):
         self.loadNewTiles()
 
     def exportLevel(self):
-        pass
+        self.controller.exportLevel()

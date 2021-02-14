@@ -29,10 +29,10 @@ class TileFrame(ScrollFrame):
 
         startx = int(640-(map_width/2))
 
-        for i in range(int(map_width/32)):
-            for j in range(int(map_height/32)):
+        for r in range(int(map_width/32)):
+            for c in range(int(map_height/32)):
                 tile = MapTile()
-                drawn_tile = self.scroll_canvas.create_image((startx+i*33,20+j*33), image=tile.getImage(), anchor="nw")
+                drawn_tile = self.scroll_canvas.create_image((startx+c*33,20+r*33), image=tile.getImage(), anchor="nw")
                 self.scroll_canvas.tag_bind(drawn_tile, "<Button-1>", self.setTile)
                 self.scroll_canvas.tag_bind(drawn_tile, "<Button-3>", self.removeTile)
                 tile.setCanvasImageRef(drawn_tile)
@@ -77,6 +77,7 @@ class TileFrame(ScrollFrame):
         tile = self.findMapTile(canvas_tile, "floor")
         tile.setImage(image)
         self.scroll_canvas.itemconfigure(tile.getCanvasImageRef(), image=image)
+
         tile.setX(x)
         tile.setY(y)
 

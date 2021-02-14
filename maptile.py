@@ -8,6 +8,7 @@ from utils import createTransparentRect
 
 class MapTile(BaseTile):
     def __init__(self):
+        super().__init__()
 
         self.canvas_image_ref = None
         self.canvas_wall_ref = None
