@@ -97,6 +97,8 @@ class TileFrame(ScrollFrame):
         wall_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
         map_tile = self.findMapTile(wall_tile, "wall")
 
+        if map_tile is None: return
+
         map_tile.setCanvasWallRef(None)
         map_tile.setWallImage(None)
         map_tile.setWall(0)
@@ -119,6 +121,8 @@ class TileFrame(ScrollFrame):
     def removeOverlayTile(self, event):
         overlay_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
         map_tile = self.findMapTile(overlay_tile, "overlay")
+        
+        if map_tile is None: return
 
         map_tile.setCanvasOverlayRef(None)
         map_tile.setOverlayImage(None)
