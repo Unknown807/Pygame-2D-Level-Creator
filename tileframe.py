@@ -1,12 +1,12 @@
 # native imports
-import tkinter as tk
+import pickle
 
 # external imports
 
 # custom imports
 from scrollframe import ScrollFrame
 from maptile import MapTile
-from utils import createTransparentRect
+from utils import createTransparentRect, getTileFromImage, loadImage
 
 class TileFrame(ScrollFrame):
     def __init__(self, parent, *args, **kwargs):
@@ -16,6 +16,7 @@ class TileFrame(ScrollFrame):
         self.scroll_canvas.configure(bg="white")
         
         self.tiles = []
+        self.ground_imgs = []
 
         self.RGB_R = (65535,0,0)
         self.RGB_B = self.RGB_R[::-1]
@@ -32,26 +33,59 @@ class TileFrame(ScrollFrame):
         for r in range(int(map_width/32)):
             for c in range(int(map_height/32)):
                 tile = MapTile()
-                drawn_tile = self.scroll_canvas.create_image((startx+c*33,20+r*33), image=tile.getImage(), anchor="nw")
+                drawn_tile = self.scroll_canvas.create_image((startx+c*33,r*33), image=tile.getImage(), anchor="nw")
                 self.scroll_canvas.tag_bind(drawn_tile, "<Button-1>", self.setTile)
                 self.scroll_canvas.tag_bind(drawn_tile, "<Button-3>", self.removeTile)
                 tile.setCanvasImageRef(drawn_tile)
                 self.tiles.append(tile)
-        
+
         self.adjustScrollRegion()
+        self.update()
     
+    def readGroundLevel(self):
+        with open(self.controller.getGround(), "rb") as level_file:
+            data = pickle.load(level_file)
+            image = loadImage(data["tileset"])
+            tiles = data["tiles"]
+            width = data["map_width"]
+            height = data["map_height"]
+
+            return (image, tiles, width, height)
+
+    def drawGround(self):
+        image, tiles, width, height = self.readGroundLevel()
+        
+        startx = int(640-(width/2))
+
+        i=0
+        for r in range(int(width/32)):
+            for c in range(int(height/32)):
+
+                gimg = getTileFromImage(tiles[i][0], tiles[i][1], image)
+                drawn_ground = self.scroll_canvas.create_image((startx+c*33,r*33),
+                    image=gimg, tags="ground", anchor="nw")
+                self.ground_imgs.append(gimg)
+
+                i+=1
+        
+        self.toggleGroundTiles("hidden")
+
     def setTile(self, event):
         mode = self.controller.getMode()
-        event_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
+        x = self.scroll_canvas.canvasx(event.x)
+        y = self.scroll_canvas.canvasy(event.y)
+        event_tile = self.scroll_canvas.find_closest(x, y)[0]
         if mode == "floor":
             self.setNewTile(event_tile)
         elif mode == "wall":
             self.setWallTile(event_tile)
-        else:
+        elif mode == "overlay":
             self.setOverlayTile(event_tile)
     
     def removeTile(self, event):
-        event_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
+        x = self.scroll_canvas.canvasx(event.x)
+        y = self.scroll_canvas.canvasy(event.y)
+        event_tile = self.scroll_canvas.find_closest(x, y)[0]
         map_tile = self.findMapTile(event_tile, "floor")
     
         map_tile.reset()
@@ -95,7 +129,9 @@ class TileFrame(ScrollFrame):
         map_tile.setWall(1)
     
     def removeWallTile(self, event):
-        wall_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
+        x = self.scroll_canvas.canvasx(event.x)
+        y = self.scroll_canvas.canvasy(event.y)
+        wall_tile = self.scroll_canvas.find_closest(x, y)[0]
         map_tile = self.findMapTile(wall_tile, "wall")
 
         if map_tile is None: return
@@ -120,7 +156,9 @@ class TileFrame(ScrollFrame):
         map_tile.setOverlay(1)
     
     def removeOverlayTile(self, event):
-        overlay_tile = self.scroll_canvas.find_closest(event.x, event.y)[0]
+        x = self.scroll_canvas.canvasx(event.x)
+        y = self.scroll_canvas.canvasy(event.y)
+        overlay_tile = self.scroll_canvas.find_closest(x, y)[0]
         map_tile = self.findMapTile(overlay_tile, "overlay")
         
         if map_tile is None: return
@@ -139,4 +177,7 @@ class TileFrame(ScrollFrame):
         for tile in self.tiles:
             self.scroll_canvas.itemconfigure(tile.getCanvasOverlayRef(), state=state)
         
+    def toggleGroundTiles(self, state):
+        for tile in self.scroll_canvas.find_withtag("ground"):
+            self.scroll_canvas.itemconfigure(tile, state=state)
     

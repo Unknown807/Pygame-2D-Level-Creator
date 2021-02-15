@@ -22,6 +22,8 @@ class Main(tk.Tk):
         self.TILESET_NAME = None
         self.TILESET = None
 
+        self.GR_TILESET_NAME = None
+
         self.MAP_WIDTH = None
         self.MAP_HEIGHT = None
 
@@ -41,6 +43,7 @@ class Main(tk.Tk):
         self.bind("1", lambda e: self.setMode(0))
         self.bind("2", lambda e: self.setMode(1))
         self.bind("3", lambda e: self.setMode(2))
+        self.bind("4", lambda e: self.setMode(3))
 
         # Widget Placement
 
@@ -50,10 +53,9 @@ class Main(tk.Tk):
         self.SELECTED_TILE = self.toolbar.selected_tile
     
     def exportLevel(self):
-        limit = int(self.MAP_WIDTH/32)
-
         level = {
             "tileset":self.TILESET_NAME,
+            "ground":self.GR_TILESET_NAME,
             "width":self.TILESET_WIDTH,
             "height":self.TILESET_WIDTH,
             "map_width":self.MAP_WIDTH,
@@ -76,20 +78,27 @@ class Main(tk.Tk):
 
     # For the mode
     def setMode(self, mnum):
-        modes = ("floor","wall","overlay")
-        colors = ("black", "red", "blue")
+        modes = ("floor","wall","overlay","ground")
+        colors = ("black", "red", "blue","green")
         self.TILE_MODE = modes[mnum]
         self.toolbar.mode_label.configure(text="MODE: "+self.TILE_MODE, fg=colors[mnum])
 
         if mnum == 0:
             self.tileframe.toggleWallTiles("hidden")
             self.tileframe.toggleOverlayTiles("hidden")
+            self.tileframe.toggleGroundTiles("hidden")
         elif mnum == 1:
             self.tileframe.toggleOverlayTiles("hidden")
+            self.tileframe.toggleGroundTiles("hidden")
             self.tileframe.toggleWallTiles("normal")
+        elif mnum == 2:
+            self.tileframe.toggleWallTiles("hidden")
+            self.tileframe.toggleGroundTiles("hidden")
+            self.tileframe.toggleOverlayTiles("normal")
         else:
             self.tileframe.toggleWallTiles("hidden")
-            self.tileframe.toggleOverlayTiles("normal")
+            self.tileframe.toggleOverlayTiles("hidden")
+            self.tileframe.toggleGroundTiles("normal")
 
     def getMode(self):
         return self.TILE_MODE
@@ -119,6 +128,14 @@ class Main(tk.Tk):
     def getTileSetHeight(self):
         return self.TILESET_HEIGHT
 
+    # For the ground tileset
+
+    def setGround(self, value):
+        self.GR_TILESET_NAME = value
+
+    def getGround(self):
+        return self.GR_TILESET_NAME
+
     # For the map
     def setMapWidth(self, value):
         self.MAP_WIDTH = value
@@ -145,6 +162,10 @@ class Main(tk.Tk):
     
     def createMap(self):
         self.tileframe.createMap()
+    
+    def drawGround(self):
+        if self.GR_TILESET_NAME is not None:
+            self.tileframe.drawGround()
 
 if __name__ == "__main__":
     root = Main()

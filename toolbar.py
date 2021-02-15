@@ -66,6 +66,7 @@ class ToolBarFrame(tk.Frame):
         # self.controller.setTileSet("C:\\Users\\Teks Viler\\Documents\\PYGAMESTUFF\\test1\\tileset2.png")
         # self.loadTileSet()
         # self.controller.createMap()
+        # self.controller.drawGround()
 
     def loadTileSet(self):
         self.TILE_X = 0
