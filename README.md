@@ -1,5 +1,12 @@
 # Pygame-2D-Level-Creator
 
+Python version 3.7.3
+## Modules Used
+
+* tkinter
+* pickle
+* pillow - version 8.1.0
+
 ## Description
 
 I made this program to help me create 2D levels using tilesets for games in pygame, The output is a '.LEVEL' file which has information on the size of the level, the size of the tilset being used and a list of 4-element tuples containing info about what type of tiles they are.
