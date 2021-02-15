@@ -11,7 +11,7 @@ class TileSetSelectionDialog(tk.Toplevel):
         super().__init__(parent, *args, **kwargs)
 
         self.geometry("250x350")
-        self.title("Select Tileset")
+        self.title("New Level")
         self.font = ("System", 14, "bold")
 
         self.parent = parent

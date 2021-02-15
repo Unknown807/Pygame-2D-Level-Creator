@@ -22,7 +22,7 @@ class ToolBarFrame(tk.Frame):
         # Widget Defintions
 
         self.collection_frame = tk.Frame(self)
-        self.tileset_button = tk.Button(self.collection_frame, text="Select Tileset",
+        self.tileset_button = tk.Button(self.collection_frame, text="Create Level",
             font=self.controller.font, command=self.selectTileSet)
         self.export_button = tk.Button(self.collection_frame, text="Export Level", 
             font=self.controller.font, command=self.exportLevel)
